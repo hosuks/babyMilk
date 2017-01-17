@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- AngularJS 1.5.8 -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+<!-- angularjs spinner -->
+<script src="/js/spin.min.js"></script>
+<script src="/js/angular-spinner.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script>
+var app = angular.module('app', ['angularSpinner']);
+
+app.controller('babyMilkController', function($scope, $http, usSpinnerService, $rootScope){
+
+    //-- 분유 검색
+    $scope.search = function(keyword) {
+      $scope.startSpin();
+      $http({
+          method: 'POST',
+          url: '/babyMilk/'+keyword,
+          type : 'json'
+      })
+      .success(function(data, status, headers, config) {
+          $scope.stopSpin();
+          $scope.wmpDealImg = data.wmpDealImg;
+          $scope.wmpPrice = data.wmpPrice;
+          $scope.wmpLinkUrl = data.wmpLinkUrl;
+          $scope.cpDealImg = data.cpDealImg;
+          $scope.cpPrice = data.cpPrice;
+          $scope.cpLinkUrl = data.cpLinkUrl;
+          $scope.cpUnitPrice = data.cpUnitPrice;
+          $scope.tmDealImg = data.tmDealImg;
+          $scope.tmPrice = data.tmPrice;
+          $scope.tmLinkUrl = data.tmLinkUrl;
+      })
+      .error(function(data, status, headers, config) {
+          /* 서버와의 연결이 정상적이지 않을 때 처리 */
+          console.log(status);
+      });
+    };
+
+    /**
+     * 로딩 애니메이션
+     * @type {number}
+     */
+    $scope.startcounter = 0;
+    $scope.startSpin = function() {
+        if (!$scope.spinneractive) {
+            usSpinnerService.spin('spinner-1');
+            $scope.startcounter++;
+        }
+    };
+
+    $scope.stopSpin = function() {
+        if ($scope.spinneractive) {
+            usSpinnerService.stop('spinner-1');
+        }
+    };
+    $scope.spinneractive = false;
+
+    $rootScope.$on('us-spinner:spin', function(event, key) {
+        $scope.spinneractive = true;
+    });
+
+    $rootScope.$on('us-spinner:stop', function(event, key) {
+        $scope.spinneractive = false;
+    });
+
+    $scope.search('위드맘');
+});
+
+</script>
+<body ng-controller="babyMilkController">
+
+<div style="text-align:center;margin-top:20px;margin-bottom:20px;">
+    <h5>원하시는 분유 브랜드를 선택하세요.</h5>
+</div>
+
+<!-- GNB -->
+<div class="row" style="text-align:center;">
+    <div class="col-xs-1 col-sm-1 col-md-1"></div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <img src="/images/gnb/product_1.png" width="100" data-value="위드맘" class="topNav" style="cursor:pointer;" ng-click="search('위드맘');"/>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <img src="/images/gnb/product_2.png" width="100" data-value="앱솔루트" class="topNav" style="cursor:pointer;" ng-click="search('앱솔루트');"/>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <img src="/images/gnb/product_3.png" width="100" data-value="유기농궁" class="topNav" style="cursor:pointer;" ng-click="search('유기농궁');"/>
+    </div>
+    <div class="col-xs-1 col-sm-1 col-md-1"></div>
+</div>
+<div class="row" style="text-align:center;">
+    <div class="col-xs-1 col-sm-1 col-md-1"></div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <img src="/images/gnb/product_4.png" width="100" data-value="앱솔루트센서티브" class="topNav" style="cursor:pointer;" ng-click="search('앱솔루트센서티브');"/>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <img src="/images/gnb/product_5.png" width="100" data-value="후디스산양분유" class="topNav" style="cursor:pointer;" ng-click="search('후디스산양분유');"/>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <img src="/images/gnb/product_6.png" width="100" data-value="홀레분유" class="topNav" style="cursor:pointer;" ng-click="search('홀레분유');"/>
+    </div>
+    <div class="col-xs-1 col-sm-1 col-md-1"></div>
+</div>
+
+<div style="margin-bottom:20px;"></div>
+
+<div class="container">
+    <table class="table table-striped">
+        <!-- 쿠팡 -->
+        <tr ng-repeat="price in cpPrice | limitTo:5 track by $index ">
+            <td style="text-align:center;vertical-align:middle;"><img src="/images/cp.png" style="width:50px;"/><br/>{{ price }}<br/>
+            <span style="font-size:11px;color:red;vertical-align:middle;">(100g당 {{ cpUnitPrice[$index] }}원)</span></td>
+            <td><a href="{{ cpLinkUrl[$index] }}" target="_blank"><img src="{{ cpDealImg[$index] }}" style="width:100px;"/></a></td>
+        </tr>
+
+      <!-- 위메프 -->
+      <tr ng-repeat="price in wmpPrice | limitTo:5 track by $index ">
+          <td style="text-align:center;vertical-align:middle;"><img src="/images/wmp.png" style="width:50px;"/><br/>{{price}}</td>
+          <td><a href="{{ wmpLinkUrl[$index] }}" target="_blank"><img src="{{ wmpDealImg[$index] }}" style="width:100px;"/></a></td>
+      </tr>
+
+      <!-- 티몬 -->
+      <tr ng-repeat="price in tmPrice | limitTo:5 track by $index ">
+          <td style="text-align:center;vertical-align:middle;"><img src="/images/tm.png" style="width:90px;"/><br/>{{ price }}</td>
+          <td><a href="{{ tmLinkUrl[$index] }}" target="_blank"><img src="{{ tmDealImg[$index] }}" style="width:100px;"/></a></td>
+      </tr>
+    </table>
+</div>
+<span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1"></span>
+</body>
+</html>
