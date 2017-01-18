@@ -4,7 +4,7 @@ var schedule = require("node-schedule");
 var BabyMilk = require("./models/BabyMilk");
 var FCM = require('fcm-node');
 
-var j = schedule.scheduleJob('0 10 * * 1', function(){
+var j = schedule.scheduleJob('10 10 * * *', function(){
   mongoose.connect(process.env.MONGO_DB); // 1
   var db = mongoose.connection;
 
