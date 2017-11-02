@@ -4,7 +4,7 @@ var schedule = require("node-schedule");
 var BabyMilk = require("./models/BabyMilk");
 var FCM = require('fcm-node');
 
-var j = schedule.scheduleJob('10 10 * * *', function(){
+var j = schedule.scheduleJob('40 11 * * *', function(){
   mongoose.connect(process.env.MONGO_DB); // 1
   var db = mongoose.connection;
 
@@ -32,7 +32,7 @@ var j = schedule.scheduleJob('10 10 * * *', function(){
 
           notification: {
               title: '분유싸다',
-              body: '[실시간]우리 아기 분유 최저가를 확인하세요.'
+              body: '우리 아기 분유 최저가를 확인하세요.'
           },
 
           data: {  //you can send only notification or only data(or include both)
